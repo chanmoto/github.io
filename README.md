@@ -13,13 +13,13 @@ Tested on Chrome only!
 ![alt tag](https://raw.github.com/amih/Candlestick.js/master/data/Candlestick_js_screenshot.png)
 
 Live demo:
-* http://chartly.com/Candlestick.js/demo/01_minimal
-* http://chartly.com/Candlestick.js/demo/02_chart_explorer
-* http://chartly.com/Candlestick.js/demo/04_crossover
+* https://chartly.com/Candlestick.js/demo/01_minimal
+* https://chartly.com/Candlestick.js/demo/02_chart_explorer
+* https://chartly.com/Candlestick.js/demo/04_crossover
 
 Assumptions
 ===========
-Data is in the same format as in finance.yahoo.com historical prices, see for example: http://finance.yahoo.com/q/hp?s=AAPL+Historical+Prices
+Data is in the same format as in finance.yahoo.com historical prices, see for example: https://finance.yahoo.com/q/hp?s=AAPL+Historical+Prices
 On this page in finance.yahoo.com you can inspect the link below the table titled: "Download to Spreadsheet"
 
 Roadmap:
@@ -51,7 +51,7 @@ Candlestick(canvasID, data, options);
 ```
 the parameters:
 - canvasID: the canvas ID in the html DOM
-- data    : the data in the finance.yahoo.com format, e.g. http://ichart.finance.yahoo.com/table.csv?s=AAPL&a=04&b=7&c=2013&d=07&e=27&f=2013&g=w&ignore=.csv
+- data    : the data in the finance.yahoo.com format, e.g. https://ichart.finance.yahoo.com/table.csv?s=AAPL&a=04&b=7&c=2013&d=07&e=27&f=2013&g=w&ignore=.csv
 - options : an object with a title element and an indicators sub-object.
 
 Data for the testing is for AAPL, MA and PRAA symbols.

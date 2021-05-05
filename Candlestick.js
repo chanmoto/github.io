@@ -9,7 +9,7 @@ window.Candlestick = function (canvasID, rawData, options) {
   this.Min = function Min(array) { return Math.min.apply(Math, array); }
 
   // END OF utility functions
-  // add format to strings -- from http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format/4673436#4673436
+  // add format to strings -- from https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format/4673436#4673436
   if (!String.prototype.format) {
     String.prototype.format = function () {
       var args = arguments;
