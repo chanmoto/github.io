@@ -318,8 +318,8 @@ else {
     ctx.moveTo(x0 + 1, yCurr);
     ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
   }
-  ctx.strokeStyle = 'green';
-  ctx.fillStyle = 'green';
+  ctx.strokeStyle = 'blue';
+  ctx.fillStyle = 'blue';
   ctx.fillText('buf5', leftPos, liMarginTop + 5);
   metrics = ctx.measureText('buf5');
   leftPos += metrics.width + 5;
@@ -333,8 +333,8 @@ else {
     ctx.moveTo(x0 + 1, yCurr);
     ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
   }
-  ctx.strokeStyle = 'green';
-  ctx.fillStyle = 'green';
+  ctx.strokeStyle = 'red';
+  ctx.fillStyle = 'red';
   ctx.fillText('buf6', leftPos, liMarginTop + 5);
   metrics = ctx.measureText('buf6');
   leftPos += metrics.width + 5;
