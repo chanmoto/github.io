@@ -265,7 +265,7 @@ window.Candlestick = function (canvasID, rawData, options) {
           df = li.buf3[i] - li.buf3[i + 1];
         }
     else {
-          if (Math.abs(df - (li.buf3[i] - li.buf3[i + 1])) >0.1) {
+          if (Math.abs(df - (li.buf3[i] - li.buf3[i + 1])) >0.01) {
             ctx.moveTo(x0 + 1, yCurr);
           }
           else {
@@ -294,7 +294,7 @@ window.Candlestick = function (canvasID, rawData, options) {
       df = li.buf4[i] - li.buf4[i + 1];
     }
 else {
-  if (Math.abs(df - (li.buf4[i] - li.buf4[i + 1])) >0.1) {
+  if (Math.abs(df - (li.buf4[i] - li.buf4[i + 1])) >0.01) {
         ctx.moveTo(x0 + 1, yCurr);
       }
       else {
