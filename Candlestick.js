@@ -125,7 +125,7 @@ window.Candlestick = function (canvasID, rawData, options) {
       var x0 = (width - marginRight) - (i + 1) * pixelsPerCandle - 1;
       ctx.moveTo(x0, y0);
       ctx.lineTo(x0, y1);
-      mm = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][d[i].getMonth()];
+      mm = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'][d[i].getMonth()];
       if (d[i].getMonth() == 0) {
         mm = ('' + d[i].getFullYear()).substr(2, 2);
       }
@@ -214,8 +214,6 @@ window.Candlestick = function (canvasID, rawData, options) {
   metrics = ctx.measureText('rsimov');
   leftPos += metrics.width + 5;
   ctx.stroke();
-
-
 
   // buf1
   var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf1[0])
@@ -342,7 +340,6 @@ else {
   leftPos += metrics.width + 5;
   ctx.fill();
 
-
   //足の描画
   for (var i = 0; i < c.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
     var yo = scale(ll, hh, height, marginTop, marginBottom, o[i])
@@ -375,7 +372,6 @@ else {
 
   upperIndicators.push(lowerIndicator);
   this.data = [oCandle, upperIndicators];
-
 
   // misc functions
   function scale(ll, hh, height, marginTop, marginBottom, y) {
@@ -435,7 +431,6 @@ else {
     array.reverse();// reverse back
     return sma;
   }
-
 
   function EMA(originalArray, emaLength) {
     var array = originalArray.slice().reverse(); // easier on my limited brain to think of the array in the "proper" order
