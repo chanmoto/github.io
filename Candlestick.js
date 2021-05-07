@@ -175,8 +175,8 @@ window.Candlestick = function (canvasID, rawData, options) {
   ctx.fillRect(marginLeft, liMarginTop, width - marginLeft - marginRight, marginBottom - 20);
   // find out the highest high and lowest low of the MACD sub chart
   var li = lowerIndicator.data;
-  var lihh = this.Max(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle))); // find highest high in MACD
-  var lill = this.Min(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle)));
+  var lihh = this.Max(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle)))*1.1; // find highest high in MACD
+  var lill = this.Min(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle)))*0.9;
 
   // RSI line
   var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsi[0])
