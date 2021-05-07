@@ -14,7 +14,7 @@
 .iframe_side{
 	display: table;
 	width:100%;
-	height: 600;
+
 }
 .iframe_side .bySide{
 	display: table-cell;
@@ -23,5 +23,5 @@
 	padding-right:0;
 	padding-left:0;
 	overflow:hidden;
-	height: 600;
+
 }
