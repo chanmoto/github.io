@@ -2,6 +2,7 @@
 // the value is an array of the parameters used to define the indicaotr
 $(function () {
   $('#ticker').focus();
+  var ticker1 = $('#ticker').val()
   $("#spinner").spinner({
     min: 0,
     spin: function (event, ui) {
@@ -33,18 +34,21 @@ $(function () {
   });
 });
 var refreshChart = function (selector, offset) {
-  var ticker = $(selector).val().toUpperCase();
+  var ticker1 = $(selector).val()
+
   var options = {
-    title: ticker + ' weekly'
+    title: ticker1 + ' weekly'
     , offset: offset
     , indicators: [
       ['EMA', 'c', 26]
       , ['SMA', 'c', 40]
-      , ['RSI', 'c', 20, 20, 10, 0.1, 0.01]
+      , ['RSI', 'c', 10, 10, 2, 0.1, 0.01]
+      , ['RSI', 'c', 20, 20, 2, 0.1, 0.01]
+      , ['RSI', 'c', 30, 30, 2, 0.1, 0.01]
     ]
   };
 
-$.get("../../data/weekly." + ticker + ".txt", function (data) {
+$.get(ticker1, function (data) {
   $('.history').html(addHistory(ticker));
   var chart = new Candlestick("myChart", data, options);
   window.Candlestick.chart = chart;

@@ -46,26 +46,14 @@ window.Candlestick = function (canvasID, rawData, options) {
     , marginBottom = 200
     , marginLeft = 5
     , marginRight = 23;
-  var hh = this.Max(h.slice(0, Math.min(h.length, (width - marginLeft - marginRight) / pixelsPerCandle)));// ろうそくの最高値
-  var ll = this.Min(l.slice(0, Math.min(l.length, (width - marginLeft - marginRight) / pixelsPerCandle)));// ろうそくの最低値
+  var hh1 = this.Max(h.slice(0, Math.min(h.length, (width - marginLeft - marginRight) / pixelsPerCandle)));// ろうそくの最高値
+  var ll1 = this.Min(l.slice(0, Math.min(l.length, (width - marginLeft - marginRight) / pixelsPerCandle)));// ろうそくの最低値
   // improve hh, ll
-  var range = hh - ll;//高さのレンジ
-  var step = 1;
-  //メモリ
-  while (range / step > 16) {
-    if (step < 4) {
-      step++;
-    } else if (step < 9) {
-      step += 2;
-    } else if (step < 30) {
-      step += 5;
-    } else {
-      step += 10;
-    }
-  }
+  var range = hh1 - ll1;//高さのレンジ
+  step = Math.floor(Math.log10(range));
 
-  ll = step * Math.floor(ll / step);//数値以下の最大の整数を返します
-  hh = step * Math.ceil(hh / step);//数値以上の最小の整数を返します
+  ll = Math.pow(10,step) * Math.floor(ll1 / Math.pow(10,step));//数値以下の最大の整数を返します
+  hh = Math.pow(10,step) * Math.ceil(hh1 / Math.pow(10,step));//数値以上の最小の整数を返します
   ///////////////////////////////////////////////////////
   // calculate the indicators
   // currently only SMA and EMA
@@ -73,7 +61,7 @@ window.Candlestick = function (canvasID, rawData, options) {
   //console.log(indicators);
 
   var upperIndicators = new Array();
-  var lowerIndicator = {};
+  var lowerIndicators = new Array();
   for (var key in options.indicators) {
     var indicator = options.indicators[key];
     //console.log(indicator);
@@ -87,13 +75,11 @@ window.Candlestick = function (canvasID, rawData, options) {
         arr: EMA(oCandle[indicator[1]], indicator[2])
         , label: 'EMA(' + indicator[1] + ',' + indicator[2] + ')'
       });
-    } else if (indicator[0] == 'MACD') {
-      lowerIndicator.label = 'MACD({0},{1},{2})'.format(indicator[1], indicator[2], indicator[3]);
-      lowerIndicator.data = MACD(oCandle.c, indicator[1], indicator[2], indicator[3]);
-      //console.log(lowerIndicator);
     } else if (indicator[0] == 'RSI') {
-      lowerIndicator.label = 'RSI(' + indicator[1] + ',' + indicator[2] + '+' + indicator[3] + '+' + indicator[4] + '+' + indicator[5] + '+' + indicator[6] + ')';
-      lowerIndicator.data = RSI(oCandle[indicator[1]], indicator[2], indicator[3], indicator[4], indicator[5], indicator[6]);
+      lowerIndicators.push({
+        label: 'RSI(' + indicator[1] + ',' + indicator[2] + '+' + indicator[3] + '+' + indicator[4] + '+' + indicator[5] + '+' + indicator[6] + ')'
+        , data: RSI(oCandle[indicator[1]], indicator[2], indicator[3], indicator[4], indicator[5], indicator[6])
+      });
     }
   }
 
@@ -105,7 +91,7 @@ window.Candlestick = function (canvasID, rawData, options) {
   ctx.fillRect(marginLeft, marginTop, width - marginLeft - marginRight, height - marginTop - marginBottom);
   //ctx.strokeRect(0,0,width-1,height-1);// just for fun, frame the whole canvas
   // Y coordinate - prices ticks
-  for (var i = ll; i <= hh; i += step) {
+  for (var i = ll; i <= hh; i += Math.pow(10,step)) {
     var y0 = scale(ll, hh, height, marginTop, marginBottom, i);
     ctx.moveTo(marginLeft, y0);
     ctx.lineTo(width - marginRight, y0);
@@ -173,172 +159,175 @@ window.Candlestick = function (canvasID, rawData, options) {
   var liMarginTop = height - marginBottom + 10;// li===LowerIndicator
   var liMarginBottom = 10;
   ctx.fillRect(marginLeft, liMarginTop, width - marginLeft - marginRight, marginBottom - 20);
-  // find out the highest high and lowest low of the MACD sub chart
-  var li = lowerIndicator.data;
-  var lihh = this.Max(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle)))*1.1; // find highest high in MACD
-  var lill = this.Min(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle)))*0.9;
 
-  // RSI line
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsi[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.moveTo(x0 + 1, yPrev);
-  for (var i = 1; i < li.rsi.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsi[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.lineTo(x0 + 1, yCurr);
-  }
+  for (var j = 0; j < lowerIndicators.length; j++) {
+    var li = lowerIndicators[j].data;
+    var llabel = lowerIndicators[j].label;
+    var lihh = this.Max(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle))) * 1.1; // find highest high in MACD
+    var lill = this.Min(li.rsi.slice(0, Math.min(li.rsi.length, (width - marginLeft - marginRight) / pixelsPerCandle))) * 0.9;
 
-  //ラベル
-  ctx.strokeStyle = 'black';
-  ctx.fillStyle = 'black';
-  leftPos = marginLeft + 5;
-  ctx.fillText(lowerIndicator.label, leftPos, liMarginTop + 5);
-  metrics = ctx.measureText(lowerIndicator.label);
-  leftPos += metrics.width + 5;
-  ctx.stroke();
-
-  // rsimov
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsimov[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.moveTo(x0 + 1, yPrev);
-  for (var i = 1; i < li.rsimov.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsimov[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.lineTo(x0 + 1, yCurr);
-  }
-  ctx.strokeStyle = 'red';
-  ctx.fillStyle = 'red';
-  ctx.fillText('rsimov', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('rsimov');
-  leftPos += metrics.width + 5;
-  ctx.stroke();
-
-  // buf1
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf1[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.setLineDash([2, 4]);
-  ctx.moveTo(x0 + 1, yPrev);
-  for (var i = 1; i < li.buf1.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf1[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.lineTo(x0 + 1, yCurr);
-  }
-  ctx.strokeStyle = 'blue';
-  ctx.fillStyle = 'blue';
-  ctx.fillText('buf1', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf1');
-  leftPos += metrics.width + 5;
-  ctx.stroke();
-
-  // buf2
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf2[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.setLineDash([2, 4]);
-  ctx.moveTo(x0 + 1, yPrev);
-  for (var i = 1; i < li.buf2.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf2[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.lineTo(x0 + 1, yCurr);
-  }
-  ctx.strokeStyle = 'red';
-  ctx.fillStyle = 'red';
-  ctx.fillText('buf2', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf2');
-  leftPos += metrics.width + 5;
-  ctx.stroke();
-
-  // buf3
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf3[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.setLineDash([]);
-  ctx.moveTo(x0 + 1, yPrev);
-  df = NaN;
-  for (var i = 1; i < li.buf3.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf3[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    if (isNaN(df)) {
-          df = li.buf3[i] - li.buf3[i + 1];
-        }
-    else {
-          if (Math.abs(df - (li.buf3[i] - li.buf3[i + 1])) >0.01) {
-            ctx.moveTo(x0 + 1, yCurr);
-          }
-          else {
-            ctx.lineTo(x0 + 1, yCurr);
-          }
-          df = li.buf3[i] - li.buf3[i + 1];
-        }
-  }
-  ctx.strokeStyle = 'blue';
-  ctx.fillStyle = 'blue';
-  ctx.fillText('buf3', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf3');
-  leftPos += metrics.width + 5;
-  ctx.stroke();
-
-  // buf4
-  var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf4[0])
-    , x0 = (width - marginRight) - pixelsPerCandle;
-  ctx.beginPath();
-  ctx.moveTo(x0 + 1, yPrev);
-  df = NaN
-  for (var i = 1; i < li.buf4.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf4[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    if (isNaN(df)) {
-      df = li.buf4[i] - li.buf4[i + 1];
+    // RSI line
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsi[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.moveTo(x0 + 1, yPrev);
+    for (var i = 1; i < li.rsi.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsi[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.lineTo(x0 + 1, yCurr);
     }
-else {
-  if (Math.abs(df - (li.buf4[i] - li.buf4[i + 1])) >0.01) {
-        ctx.moveTo(x0 + 1, yCurr);
+
+    //ラベル
+    ctx.strokeStyle = 'black';
+    ctx.fillStyle = 'black';
+    leftPos = marginLeft + 5;
+    ctx.fillText(llabel, leftPos, liMarginTop + 5);
+    metrics = ctx.measureText(llabel);
+    leftPos += metrics.width + 5;
+    ctx.stroke();
+
+    // rsimov
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsimov[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.moveTo(x0 + 1, yPrev);
+    for (var i = 1; i < li.rsimov.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.rsimov[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.lineTo(x0 + 1, yCurr);
+    }
+    ctx.strokeStyle = 'red';
+    ctx.fillStyle = 'red';
+    ctx.fillText('rsimov', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('rsimov');
+    leftPos += metrics.width + 5;
+    ctx.stroke();
+
+    // buf1
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf1[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.setLineDash([2, 4]);
+    ctx.moveTo(x0 + 1, yPrev);
+    for (var i = 1; i < li.buf1.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf1[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.lineTo(x0 + 1, yCurr);
+    }
+    ctx.strokeStyle = 'blue';
+    ctx.fillStyle = 'blue';
+    ctx.fillText('buf1', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf1');
+    leftPos += metrics.width + 5;
+    ctx.stroke();
+
+    // buf2
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf2[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.setLineDash([2, 4]);
+    ctx.moveTo(x0 + 1, yPrev);
+    for (var i = 1; i < li.buf2.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf2[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.lineTo(x0 + 1, yCurr);
+    }
+    ctx.strokeStyle = 'red';
+    ctx.fillStyle = 'red';
+    ctx.fillText('buf2', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf2');
+    leftPos += metrics.width + 5;
+    ctx.stroke();
+
+    // buf3
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf3[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.moveTo(x0 + 1, yPrev);
+    df = NaN;
+    for (var i = 1; i < li.buf3.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf3[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      if (isNaN(df)) {
+        df = li.buf3[i] - li.buf3[i + 1];
       }
       else {
-        ctx.lineTo(x0 + 1, yCurr);
+        if (Math.abs(df - (li.buf3[i] - li.buf3[i + 1])) > 0.01) {
+          ctx.moveTo(x0 + 1, yCurr);
+        }
+        else {
+          ctx.lineTo(x0 + 1, yCurr);
+        }
+        df = li.buf3[i] - li.buf3[i + 1];
       }
-      df = li.buf4[i] - li.buf4[i + 1];
     }
-  }
-  ctx.strokeStyle = 'red';
-  ctx.fillStyle = 'red';
-  ctx.fillText('buf4', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf4');
-  leftPos += metrics.width + 5;
-  ctx.stroke();
+    ctx.strokeStyle = 'blue';
+    ctx.fillStyle = 'blue';
+    ctx.fillText('buf3', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf3');
+    leftPos += metrics.width + 5;
+    ctx.stroke();
 
-  // buf5
-  ctx.beginPath();
-  for (var i = 1; i < li.buf5.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf5[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.moveTo(x0 + 1, yCurr);
-    ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
-  }
-  ctx.strokeStyle = 'blue';
-  ctx.fillStyle = 'blue';
-  ctx.fillText('buf5', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf5');
-  leftPos += metrics.width + 5;
-  ctx.fill();
+    // buf4
+    var yPrev = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf4[0])
+      , x0 = (width - marginRight) - pixelsPerCandle;
+    ctx.beginPath();
+    ctx.moveTo(x0 + 1, yPrev);
+    df = NaN
+    for (var i = 1; i < li.buf4.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf4[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      if (isNaN(df)) {
+        df = li.buf4[i] - li.buf4[i + 1];
+      }
+      else {
+        if (Math.abs(df - (li.buf4[i] - li.buf4[i + 1])) > 0.01) {
+          ctx.moveTo(x0 + 1, yCurr);
+        }
+        else {
+          ctx.lineTo(x0 + 1, yCurr);
+        }
+        df = li.buf4[i] - li.buf4[i + 1];
+      }
+    }
+    ctx.strokeStyle = 'red';
+    ctx.fillStyle = 'red';
+    ctx.fillText('buf4', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf4');
+    leftPos += metrics.width + 5;
+    ctx.stroke();
 
-  // buf6
-  ctx.beginPath();
-  for (var i = 1; i < li.buf6.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
-    var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf6[i]);
-    x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
-    ctx.moveTo(x0 + 1, yCurr);
-    ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
+    // buf5
+    ctx.beginPath();
+    for (var i = 1; i < li.buf5.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf5[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.moveTo(x0 + 1, yCurr);
+      ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
+    }
+    ctx.strokeStyle = 'blue';
+    ctx.fillStyle = 'blue';
+    ctx.fillText('buf5', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf5');
+    leftPos += metrics.width + 5;
+    ctx.fill();
+
+    // buf6
+    ctx.beginPath();
+    for (var i = 1; i < li.buf6.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
+      var yCurr = scale(lill, lihh, height, liMarginTop, liMarginBottom, li.buf6[i]);
+      x0 = (width - marginRight) - (i + 1) * pixelsPerCandle;
+      ctx.moveTo(x0 + 1, yCurr);
+      ctx.arc(x0 + 1, yCurr, 5, 0, Math.PI * 2, true); // 外の円
+    }
+    ctx.strokeStyle = 'red';
+    ctx.fillStyle = 'red';
+    ctx.fillText('buf6', leftPos, liMarginTop + 5);
+    metrics = ctx.measureText('buf6');
+    leftPos += metrics.width + 5;
+    ctx.fill();
   }
-  ctx.strokeStyle = 'red';
-  ctx.fillStyle = 'red';
-  ctx.fillText('buf6', leftPos, liMarginTop + 5);
-  metrics = ctx.measureText('buf6');
-  leftPos += metrics.width + 5;
-  ctx.fill();
 
   //足の描画
   for (var i = 0; i < c.length && i < (width - marginLeft - marginRight - pixelsPerCandle) / pixelsPerCandle; i++) {
@@ -370,8 +359,8 @@ else {
     ctx.stroke();
   }
 
-  upperIndicators.push(lowerIndicator);
-  this.data = [oCandle, upperIndicators];
+//  upperIndicators.push(lowerIndicator);
+//  this.data = [oCandle, upperIndicators];
 
   // misc functions
   function scale(ll, hh, height, marginTop, marginBottom, y) {
@@ -403,11 +392,11 @@ else {
       } else if (options.adjust == 2) {
         ratio = adjC / cc;
       }
-      o.push(Number((oo * ratio).toFixed(2)));//Number」オブジェクトのメソッドtoFixed	四捨五入もしくは小数点の桁数を指定する
-      h.push(Number((hh * ratio).toFixed(2)));
-      l.push(Number((ll * ratio).toFixed(2)));
-      c.push(Number((cc * ratio).toFixed(2)));
-      v.push(Number((vv / ratio).toFixed(0)));
+      o.push(Number(oo));//Number」オブジェクトのメソッドtoFixed	四捨五入もしくは小数点の桁数を指定する
+      h.push(Number(hh));
+      l.push(Number(ll));
+      c.push(Number(cc));
+      v.push(Number(vv));
     }
     return { d: d, o: o, h: h, l: l, c: c, v: v };//戻り値を{}で括り、オブジェクトを返す
   }

@@ -11,14 +11,14 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
 
     //RSIの乖離率を求める
     var kBuf = new Array();
-    for (i = 0; i < RSI.length - 1; i++) {
+    for(var i = 0; i < RSI.length - 1; i++) {
         kBuf[i] = (RSI[i] - MovRsi[i]) / MovRsi[i];
     }
 
     //区間に分けて考えていく
     j = 0;
     var ii = new Array();
-    for (i = 1; j < nLine * 5; i++) {
+    for(var i = 1; j < 20; i++) {
         if (kBuf[i] * kBuf[i + 1] <= 0) {//変極点をiiにプールする
             ii[j] = i;
             j++;
@@ -35,26 +35,26 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
 
     //乖離率の変曲点で、上下をグループ分けする。
     if (kBuf[ii[0]] < 0) {
-        for (ll = 0; ll < nLine + 3; ll++) {
-            var a1 = ii[0 + ll * 2] + 1;
-            var a2 = ii[1 + ll * 2] + 1;
-            var b1 = ii[1 + ll * 2] + 1;
-            var b2 = ii[2 + ll * 2] + 1;
+        for(var linel = 0; linel < nLine + 3; linel++) {
+            var a1 = ii[0 + linel * 2] + 1;
+            var a2 = ii[1 + linel * 2] + 1;
+            var b1 = ii[1 + linel * 2] + 1;
+            var b2 = ii[2 + linel * 2] + 1;
 
-            HiStack[ll] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
-            LoStack[ll] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
+            HiStack[linel] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
+            LoStack[linel] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
             console.log(a1, a2, b1, b2);
         }
     }
     else {
-        for (ll = 0; ll < nLine + 3; ll++) {
-            var a1 = ii[1 + ll * 2] + 1;
-            var a2 = ii[2 + ll * 2] + 1;
-            var b1 = ii[0 + ll * 2] + 1;
-            var b2 = ii[1 + ll * 2] + 1;
+        for(var linel = 0; linel < nLine + 3; linel++) {
+            var a1 = ii[1 + linel * 2] + 1;
+            var a2 = ii[2 + linel * 2] + 1;
+            var b1 = ii[0 + linel * 2] + 1;
+            var b2 = ii[1 + linel * 2] + 1;
 
-            HiStack[ll] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
-            LoStack[ll] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
+            HiStack[linel] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
+            LoStack[linel] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
             console.log(a1, a2, b1, b2);
         }
     }
@@ -66,7 +66,7 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
     var buf5 = new Array();
     var buf6 = new Array();
 
-    for (i = 0; i < RSI.length - 1; i++) {
+    for(var i = 0; i < RSI.length - 1; i++) {
         buf1[i] = NaN;
         buf2[i] = NaN;
         buf3[i] = NaN;
@@ -75,20 +75,20 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
         buf6[i] = NaN;
     }
 
-    for (ll = 0; ll < nLine; ll++) {
-        var hp1 = RSI[HiStack[ll]];
-        var hp2 = RSI[HiStack[ll + 1]];
-        var hp1n = HiStack[ll];
-        var hp2n = HiStack[ll + 1];
-        var hp3n = HiStack[ll - 1];
+    for(var linel = 0; linel < nLine; linel++) {
+        var hp1 = RSI[HiStack[linel]];
+        var hp2 = RSI[HiStack[linel + 1]];
+        var hp1n = HiStack[linel];
+        var hp2n = HiStack[linel + 1];
+        var hp3n = HiStack[linel - 1];
 
         if (hp2n != hp1n) { rh = ((hp2 - hp1) / (hp2n - hp1n)); }
 
-        var lp1 = RSI[LoStack[ll]];
-        var lp2 = RSI[LoStack[ll + 1]];
-        var lp1n = LoStack[ll];
-        var lp2n = LoStack[ll + 1];
-        var lp3n = LoStack[ll - 1];
+        var lp1 = RSI[LoStack[linel]];
+        var lp2 = RSI[LoStack[linel + 1]];
+        var lp1n = LoStack[linel];
+        var lp2n = LoStack[linel + 1];
+        var lp3n = LoStack[linel - 1];
 
         if (lp1n != lp2n) { rl = ((lp1 - lp2) / (lp2n - lp1n)); }
 
@@ -109,8 +109,8 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
         }
     }
 
-    for (i = 0; i < RSI.length - 1; i++) {
-        // SELL 
+    for(var i = 0; i < RSI.length - 1; i++) {
+        // SElinel 
         if (buf4[i] >= buf4[i + 1] && Math.abs((buf4[i] - buf4[i + 1]) - (buf4[i - 1] - buf4[i])) < 0.001 && RSI[i] < buf4[i] && RSI[i + 2] > buf4[i + 2] && buf4[i + 1] - RSI[i + 1] > margin) {
             buf6[i] = RSI[i];
         } else {
@@ -129,8 +129,8 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
 function CalculateSMA(Price, Period) {
     Price.reverse(); // 便宜的に逆転させる
     var sma = new Array();
-    for (var i = 0; i < Period - 1; i++) {
-        sma[i] = NaN;
+    for (var i = 0; i < Price.length; i++) {
+        sma[i] = 0;
     }
     sma[Period - 1] = Price.slice(0, Period).reduce(function (a, b) { return a + b }) / Period;
     for (var i = Period; i < Price.length; i++) {
@@ -144,6 +144,10 @@ function CalculateSMA(Price, Period) {
 function CalculateRsi(Price, Period) {
     Price.reverse(); // 便宜的に逆転させる
     var rsiArr = new Array();
+     for (var i = 0; i < Price.length; i++) {
+        rsiArr[i] = 0;
+    }
+
     var gs = 0;
     var ls = 0;
 
@@ -160,10 +164,11 @@ function CalculateRsi(Price, Period) {
     var ag = gs / Period;
     var al = ls / Period;
     var rs = ag / al;
+    if( isNaN(rs)){rs=0.5;}
     var rsi = 100 - (100 / (1 + rs));
     rsiArr.push(rsi);
 
-    for (var i = Period + 1; i < Price.length; i++) {
+    for (var i = Period + 1 ; i < Price.length; i++) {
         var dPrice = Price[i] - Price[i - 1];
         if (dPrice > 0) {
             ag = (ag * (Period - 1) + dPrice) / Period;
@@ -174,6 +179,7 @@ function CalculateRsi(Price, Period) {
             al = (al * (Period - 1) + (-1) * dPrice) / Period;
         }
         rs = ag / al;
+        if( isNaN(rs)){rs=0.5;}
         rsi = 100 - (100 / (1 + rs));
         rsiArr.push(rsi);
     }
