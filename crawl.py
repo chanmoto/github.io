@@ -18,9 +18,9 @@ def main():
         for symbol in [symbol_sep,symbol_sep[3:]+symbol_sep[:3]]:
             sleep(2)
             try:
-                data, meta_data = ts.get_daily(symbol, outputsize='full')
+                data, meta_data = ts.get_daily(symbol.lower(), outputsize='full')
                 data.sort_values('date',inplace=True,ascending=False)
-                fn = f'{symbol}_{time_window}.csv'
+                fn = f'{symbol.lower()}_{time_window}.csv'
                 data.to_csv(f'data/{fn}')
                 print(f"<option value='{fn}'>{fn}</option>")
             except:
