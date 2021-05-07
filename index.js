@@ -11,21 +11,11 @@ $(function () {
     }
   });
   refreshChart('#ticker', 0);
-  $('#ticker').bind('keypress', function (e) {
-    if (e.which == 13) {
-      $("#spinner").spinner("value", 0);
-      refreshChart('#ticker');
-    }
+  $('#ticker').change(function () {
+       refreshChart('#ticker');
   });
   $('#ticker').click(function () {
     $('#ticker').select();
-  });
-  $('#go_button').click(function () {
-    $("#spinner").spinner("value", 0);
-    refreshChart('#ticker');
-  });
-  $('#enter_button').click(function () {
-    eval($('#code').val());
   });
   $('.history').on('click', 'li', function () {
     $('#ticker').val($(this).text());
@@ -42,13 +32,13 @@ var refreshChart = function (selector, offset) {
     , indicators: [
       ['EMA', 'c', 26]
       , ['SMA', 'c', 40]
-      , ['RSI', 'c', 10, 10, 2, 0.1, 0.01]
       , ['RSI', 'c', 20, 20, 2, 0.1, 0.01]
+      , ['RSI', 'c', 25, 25, 2, 0.1, 0.01]
       , ['RSI', 'c', 30, 30, 2, 0.1, 0.01]
     ]
   };
 
-$.get(ticker1, function (data) {
+$.get("../../data/"+ ticker1, function (data) {
   $('.history').html(addHistory(ticker));
   var chart = new Candlestick("myChart", data, options);
   window.Candlestick.chart = chart;

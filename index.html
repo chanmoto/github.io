@@ -1,22 +1,28 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="index.css">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-
 <script src="RsiBreakout.js"></script>
 <script src="Candlestick.js"></script>
 <script src="index.js"></script>
 </head>
 <body>
-<select id = "ticker" name="ticker">
-    <option value='../../data/usdjpy_daily.csv'>USDJPY_M</option>
-    <option value='../../data/eurusd_daily.csv'>EURUSD_M</option>
+<select id = "ticker" name="ticker" class="design-select-box">
+    <option value='EURUSD_daily.csv'>EURUSD_daily.csv</option>
+    <option value='USDEUR_daily.csv'>USDEUR_daily.csv</option>
+    <option value='GBPJPY_daily.csv'>GBPJPY_daily.csv</option>
+    <option value='JPYGBP_daily.csv'>JPYGBP_daily.csv</option>
+    <option value='GBPUSD_daily.csv'>GBPUSD_daily.csv</option>
+    <option value='CADUSD_daily.csv'>CADUSD_daily.csv</option>
+    <option value='USDJPY_daily.csv'>USDJPY_daily.csv</option>
+    <option value='JPYUSD_daily.csv'>JPYUSD_daily.csv</option>
+    <option value='EURGBP_daily.csv'>EURGBP_daily.csv</option>
+    <option value='GBPEUR_daily.csv'>GBPEUR_daily.csv</option>
 </select>
     
-
-<a id="go_button" href="#" class="button">Go!</a><input id="spinner"><br/><br/>
-<div class='history'>&nbsp; </div>
+<input id="spinner"><br/><br/>
 <canvas id="myChart" width="250" height="500"></canvas>
 </body>
 </html>

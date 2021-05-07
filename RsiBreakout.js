@@ -43,7 +43,6 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
 
             HiStack[linel] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
             LoStack[linel] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
-            console.log(a1, a2, b1, b2);
         }
     }
     else {
@@ -55,7 +54,6 @@ function RSI(Price, Period, nPeriod_MA, nLine, min_gap, margin) {
 
             HiStack[linel] = RSI.indexOf(RSI.slice(a1, a2).reduce((a, b) => a > b ? a : b), a1);
             LoStack[linel] = RSI.indexOf(RSI.slice(b1, b2).reduce((a, b) => a < b ? a : b), b1);
-            console.log(a1, a2, b1, b2);
         }
     }
 
