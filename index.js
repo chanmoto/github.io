@@ -32,7 +32,7 @@ var refreshChart = function (selector, offset) {
     , indicators: [
       ['EMA', 'c', 26]
       , ['SMA', 'c', 40]
-      , ['RSI', 'c', 20, 20, 2, 0.1, 0.01]
+      , ['RSI', 'c', 20, 20, 2, 3, 0.001]
 
     ]
   };
