@@ -129,8 +129,10 @@ window.Candlestick = function (canvasID, rawData, options) {
   ctx.fillStyle = 'black';
   ctx.font = "bold 16px sans-serif";
   ctx.fillText(options.title, leftPos, marginTop + 1);
-  var metrics = ctx.measureText(options.title);
-  leftPos += metrics.width + 5;
+  toppos = 20;
+  ctx.fillText(d[0].toLocaleDateString(), leftPos, marginTop +toppos+ 1);
+  //leftPos += metrics.width + 5;
+  toppos += 20;
 
 
   for (var j = 0; j < upperIndicators.length; j++) {
@@ -146,10 +148,11 @@ window.Candlestick = function (canvasID, rawData, options) {
     }
     ctx.strokeStyle = getColor(j);
     ctx.fillStyle = getColor(j);
-    ctx.fillText(upperIndicator.label, leftPos, marginTop + 1);
+    ctx.fillText(upperIndicator.label, leftPos, marginTop + toppos+ 1);
     ctx.stroke();
     var metrics = ctx.measureText(upperIndicator.label);
-    leftPos += metrics.width + 5;
+    //leftPos += metrics.width + 5;
+    toppos += 20;
   }
 
   // draw the lowerIndocator, MACD
