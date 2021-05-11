@@ -33,7 +33,8 @@ var refreshChart = function (selector, offset) {
       ['EMA', 'c', 26]
       , ['SMA', 'c', 40]
       , ['RSI', 'c', 20, 20, 2, 3, 0.001]
-
+      , ['RSI', 'c', 25, 25, 2, 2, 0.001]
+      , ['RSI', 'c', 30, 30, 2, 1, 0.001]
     ]
   };
 
