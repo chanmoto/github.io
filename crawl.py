@@ -8,7 +8,7 @@ from alpha_vantage.timeseries import TimeSeries
 from time import sleep
 
 api_key = 'KDDTQTNE9OTMD4V4.'
-symbols = ['RGLDOU.SWI','EURUSD','GBPJPY','GBPUSD','NZDJPY','USDCAD','USDJPY','EURGBP','EURJPY','GBPAUD']
+symbols = ['XAUUSD','EURUSD','GBPJPY','GBPUSD','NZDJPY','USDCAD','USDJPY','EURGBP','EURJPY','GBPAUD']
 
 time_window = 'daily'
 
