@@ -4,7 +4,7 @@ import os
 import re
 import requests
 import io
-#from alpha_vantage.timeseries import TimeSeries
+from alpha_vantage.timeseries import TimeSeries
 from time import sleep
 from pandas_datareader import data
 
