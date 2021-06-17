@@ -4,8 +4,9 @@ import os
 import re
 import requests
 import io
-from alpha_vantage.timeseries import TimeSeries
+#from alpha_vantage.timeseries import TimeSeries
 from time import sleep
+from pandas_datareader import data
 
 api_key = 'KDDTQTNE9OTMD4V4.'
 symbols = ['XAUUSD','EURUSD','GBPJPY','GBPUSD','NZDJPY','USDCAD','USDJPY','EURGBP','EURJPY','GBPAUD']
@@ -26,4 +27,12 @@ def main():
                 pass
 
 if __name__ == '__main__':
-    main()
+#    main()
+    symbol = 'usdjpy'
+    time_window = 'daily' 
+    jpy = data.DataReader('DEXJPUS','fred')
+    jpy.sort_values('DATE',inplace=True,ascending=False)
+    jpy = jpy.dropna()
+    fn = f'{symbol.lower()}_{time_window}.csv'
+    jpy.to_csv(f'data/{fn}')
+    print(f"<option value='{fn}'>{fn}</option>")
