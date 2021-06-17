@@ -27,7 +27,7 @@ def main():
                 pass
 
 if __name__ == '__main__':
-#    main()
+    main()
     symbol = 'usdjpy'
     time_window = 'daily' 
     jpy = data.DataReader('DEXJPUS','fred')

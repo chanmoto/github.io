@@ -27,7 +27,7 @@ var refreshChart = function (selector, offset) {
   var ticker1 = $(selector).val()
 
   var options = {
-    title: ticker1 + ' weekly'
+    title: ticker1 + ' dairy'
     , offset: offset
     , indicators: [
       ['EMA', 'c', 26]
