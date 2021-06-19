@@ -26,13 +26,17 @@ def main():
                 print(symbol+" err")
                 pass
 
-if __name__ == '__main__':
-    main()
-    symbol = 'usdjpy'
+def pandd(symbol):
     time_window = 'daily' 
-    jpy = data.DataReader('DEXJPUS','fred')
+    jpy = data.DataReader(symbol 'DEXJPUS','fred')
     jpy.sort_values('DATE',inplace=True,ascending=False)
     jpy = jpy.dropna()
     fn = f'{symbol.lower()}_{time_window}.csv'
     jpy.to_csv(f'data/{fn}')
-    print(f"<option value='{fn}'>{fn}</option>")
+    print(f"<option value='{fn}'>{fn}</option>") 
+
+if __name__ == '__main__':
+    main()
+    pandd('DEXJPUS')
+    pandd("GOLDAMGBD228NLBM")
+    pandd("NIKKEI225")
