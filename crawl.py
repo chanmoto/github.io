@@ -28,7 +28,7 @@ def main():
 
 def pandd(symbol):
     time_window = 'daily' 
-    jpy = data.DataReader(symbol 'DEXJPUS','fred')
+    jpy = data.DataReader(symbol ,'fred')
     jpy.sort_values('DATE',inplace=True,ascending=False)
     jpy = jpy.dropna()
     fn = f'{symbol.lower()}_{time_window}.csv'
