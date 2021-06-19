@@ -381,12 +381,23 @@ window.Candlestick = function (canvasID, rawData, options) {
     for (var i = 0; i < allTextLines.length; i++) {
       var entries = allTextLines[i].split(',');//CSV分離
       d.push(new Date(entries[0]));//0列をDATA変換して、dに入れる
+      if (entries.length==2){
+        var oo = entries[1]
+        , hh = entries[1]
+        , ll = entries[1]
+        , cc = entries[1]
+        , vv = entries[1]
+        , adjC = 0;
+      }
+      else{
       var oo = entries[1]
         , hh = entries[2]
         , ll = entries[3]
         , cc = entries[4]
         , vv = entries[5]
         , adjC = entries[6];
+      }
+      
       var ratio;
       if (options.adjust == 0) {//ADJUSTで分岐処理
         ratio = 1;
