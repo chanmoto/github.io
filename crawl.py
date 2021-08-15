@@ -9,7 +9,8 @@ from time import sleep
 from pandas_datareader import data
 
 api_key = 'KDDTQTNE9OTMD4V4.'
-symbols = ['XAUUSD','EURUSD','GBPJPY','GBPUSD','NZDJPY','USDCAD','USDJPY','EURGBP','EURJPY','GBPAUD']
+symbols = ['EURUSD']
+
 
 time_window = 'daily'
 
@@ -35,8 +36,18 @@ def pandd(symbol):
     jpy.to_csv(f'data/{fn}')
     print(f"<option value='{fn}'>{fn}</option>") 
 
+def pan4h(symbol):
+    cwd = os.getcwd()
+    fn = os.path.join(cwd,"data", symbol + '.csv')
+    print(fn)
+    df = pd.read_csv(fn,header=None)
+    df = df.sort_values([0,1],ascending=[False,False])
+    del df[1]
+    df.to_csv(fn,index = False)
+
 if __name__ == '__main__':
     main()
     pandd('DEXJPUS')
     pandd("GOLDAMGBD228NLBM")
     pandd("NIKKEI225")
+    pan4h('EURUSD-a240')
