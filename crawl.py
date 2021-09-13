@@ -51,3 +51,4 @@ if __name__ == '__main__':
     pandd("GOLDAMGBD228NLBM")
     pandd("NIKKEI225")
     pan4h('EURUSD-a240')
+    pan4h('EURUSD-a60')
