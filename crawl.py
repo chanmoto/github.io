@@ -50,5 +50,5 @@ if __name__ == '__main__':
     pandd('DEXJPUS')
     pandd("GOLDAMGBD228NLBM")
     pandd("NIKKEI225")
-    pan4h('EURUSD-a240')
-    pan4h('EURUSD-a60')
+    pan4h('EURUSD.oj5k240')
+    pan4h('EURUSD.oj5k60')
